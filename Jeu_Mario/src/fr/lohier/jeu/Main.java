@@ -12,7 +12,7 @@ public class Main {
 		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fenetre.setSize(700, 360);
 		fenetre.setLocationRelativeTo(null);
-		fenetre.setResizable(false);
+		fenetre.setResizable(true);
 		fenetre.setAlwaysOnTop(true);
 		
 		// Instanciation de l'objet scene

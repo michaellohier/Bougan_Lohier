@@ -13,24 +13,50 @@ import javax.swing.JPanel;
 public class Scene extends JPanel{
 	private ImageIcon icoFond;
 	private Image imgFond1;
+	private Image imgFond2;
+
 	
 	private ImageIcon icoMario;
 	private Image imgMario;
 
 	private int xFond1;
+	private int xFond2;
+
+	private int dx;
 	
 	public Scene(){		
 		
 		super();
 		
+		
+		this.dx = 0;
 		this.xFond1 = -50;
+		this.xFond1 = 750;
+
 		
-		this.icoFond = new ImageIcon(getClass().getResource("Images/fondEcran"));
+		this.icoFond = new ImageIcon(getClass().getResource("/Images/fondEcran.png"));
 		this.imgFond1 = this.icoFond.getImage();
+		this.imgFond2 = this.icoFond.getImage();
+
 		
-		this.icoMario = new ImageIcon(getClass().getResource("Images/marioMarcheDroite"));
+		this.icoMario = new ImageIcon(getClass().getResource("/Images/marioMarcheDroite.png"));
 		this.imgMario = this.icoMario.getImage();
-		}
+		Thread chronoEcran = new Thread(new Chrono());
+		chronoEcran.start();
+		
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+		this.addKeyListener(new Clavier());
+		
+		}	
+	
+	
+	
+	public void deplacementFond() {
+		this.xFond1 = this.xFond1 - this.dx;
+		this.xFond2 = this.xFond2 - this.dx;
+
+	}
 
 
 	public void paintComponent(Graphics g) {
@@ -38,9 +64,25 @@ public class Scene extends JPanel{
 		super.paintComponent(g);
 		Graphics g2 = (Graphics2D)g;
 		
+		this.deplacementFond();
+		
 		g2.drawImage(this.imgFond1, this.xFond1, 0, null);
+		g2.drawImage(this.imgFond2, this.xFond2, 0, null);
 		g2.drawImage(this.imgMario, 300, 245, null);
 
+	}
+
+	//**** GETTERS ****//	
+
+	public int getDx() {
+		return dx;
+	}
+
+	
+	//**** SETTERS ****//	
+
+	public void setDx(int dx) {
+		this.dx = dx;
 	}
 	
 }
