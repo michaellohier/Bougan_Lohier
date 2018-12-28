@@ -3,10 +3,8 @@ package fr.lohier.jeu;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import fr.lohier.jeu.personnages.Mario;
 
 @SuppressWarnings("serial")
@@ -26,35 +24,28 @@ public class Scene extends JPanel{
 	private int dx;
 	private int xPos;
 	
-	private Mario mario;
+	public Mario mario;
 	
 
 	
 	public Scene(){		
 		
 		super();
-		
-		
-		this.dx = 0;
 		this.xFond1 = -50;
 		this.xFond2 = 750;
 		this.xPos = -1;
-		
-		icoFond = new ImageIcon(getClass().getResource("/Images/fondEcran.png"));
+		this.dx = 0;
+		icoFond = new ImageIcon(getClass().getResource("/images/fondEcran.png"));
 		this.imgFond1 = this.icoFond.getImage();
 		this.imgFond2 = this.icoFond.getImage();
-		
-		this.icoChateau1 = new ImageIcon(getClass().getResource("/Images/chateau1.png"));
+		this.icoChateau1 = new ImageIcon(getClass().getResource("/images/chateau1.png"));
 		this.imgChateau1 = this.icoChateau1.getImage();
-		this.icoDepart = new ImageIcon(getClass().getResource("/Images/depart.png"));
+		this.icoDepart = new ImageIcon(getClass().getResource("/images/depart.png"));
 		this.imgDepart = this.icoDepart.getImage();
-		
 		this.mario = new Mario(300, 245);
-		
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.addKeyListener(new Clavier());
-		
 		Thread chronoEcran = new Thread(new Chrono());
 		chronoEcran.start();
 		}	
@@ -89,7 +80,7 @@ public class Scene extends JPanel{
 		
 		g2.drawImage(this.imgFond1, this.xFond1, 0, null);
 		g2.drawImage(this.imgFond2, this.xFond2, 0, null);
-		g2.drawImage(this.mario.getImgMario(), 300, 245, null);
+		g2.drawImage(this.mario.marche("mario",25), 300, 245, null);
 		g2.drawImage(this.imgChateau1, 10 - this.xPos, 95, null);
 		g2.drawImage(this.imgDepart, 220 - this.xPos, 234, null);
 

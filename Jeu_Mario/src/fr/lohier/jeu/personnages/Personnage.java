@@ -1,5 +1,12 @@
 package fr.lohier.jeu.personnages;
 
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+
+
+import fr.lohier.jeu.Main;
+
 public class Personnage {
 	//**** VARIABLES ****//
 		private int largeur, hauteur; //dimensions du personnage
@@ -62,5 +69,42 @@ public class Personnage {
 		
 		public void setCompteurMort(int compteurMort) {this.compteurMort = compteurMort;}
 
+		//**** METHODES ****//
+		
+		public Image marche(String nom, int frequence) {
+			String str;
+			ImageIcon ico;
+			Image img;
+			
+			if(!this.marche || Main.scene.getxPos() <= 0) {
+				if(this.isVersDroite()) {
+					str = "/images/" + nom + "ArretDroite.png";
+				}else {
+					str = "/images/" + nom + "ArretGauche.png";
+
+				}
+			}else {
+				this.compteur++;
+				if(this.compteur/frequence == 0) { //compteur et frequence entiers donc compteur<frequence
+					if(this.versDroite) {
+						str = "/images/" + nom + "ArretDroite.png";
+					}else {
+						str = "/images/" + nom + "ArretGauche.png";
+					}
+				}else {
+					if(this.versDroite) {
+						str = "/images/" + nom + "MarcheDroite.png";
+					}else {
+						str = "/images/" + nom + "MarcheGauche.png";
+					}
+				}
+				if(this.compteur == 2* frequence) {
+					this.compteur = 0;
+				}
+			}
+			ico = new ImageIcon((getClass().getResource(str)));
+			img = ico.getImage();
+			return img;
+		}	
 
 }

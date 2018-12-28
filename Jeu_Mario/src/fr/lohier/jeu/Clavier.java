@@ -18,15 +18,20 @@ public class Clavier implements KeyListener {
         		Main.scene.setxFond1(-50);
         		Main.scene.setxFond2(750);
         	}
+        	Main.scene.mario.setMarche(true);
+        	Main.scene.mario.setVersDroite(true);
 			Main.scene.setDx(1);
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			Main.scene.setDx(-1);
+	      	Main.scene.mario.setMarche(true);
+        	Main.scene.mario.setVersDroite(false);
 		}
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		Main.scene.mario.setMarche(false);
 		Main.scene.setDx(0);
 	}
 
