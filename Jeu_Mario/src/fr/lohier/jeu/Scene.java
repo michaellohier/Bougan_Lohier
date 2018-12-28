@@ -7,8 +7,6 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-
-
 @SuppressWarnings("serial")
 public class Scene extends JPanel{
 	private ImageIcon icoFond;
@@ -21,7 +19,6 @@ public class Scene extends JPanel{
 
 	private int xFond1;
 	private int xFond2;
-
 	private int dx;
 	
 	public Scene(){		
@@ -31,23 +28,21 @@ public class Scene extends JPanel{
 		
 		this.dx = 0;
 		this.xFond1 = -50;
-		this.xFond1 = 750;
+		this.xFond2 = 750;
 
 		
-		this.icoFond = new ImageIcon(getClass().getResource("/Images/fondEcran.png"));
+		icoFond = new ImageIcon(getClass().getResource("/Images/fondEcran.png"));
 		this.imgFond1 = this.icoFond.getImage();
 		this.imgFond2 = this.icoFond.getImage();
-
-		
-		this.icoMario = new ImageIcon(getClass().getResource("/Images/marioMarcheDroite.png"));
+		icoMario = new ImageIcon(getClass().getResource("/Images/marioMarcheDroite.png"));
 		this.imgMario = this.icoMario.getImage();
-		Thread chronoEcran = new Thread(new Chrono());
-		chronoEcran.start();
 		
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.addKeyListener(new Clavier());
 		
+		Thread chronoEcran = new Thread(new Chrono());
+		chronoEcran.start();
 		}	
 	
 	
@@ -55,7 +50,11 @@ public class Scene extends JPanel{
 	public void deplacementFond() {
 		this.xFond1 = this.xFond1 - this.dx;
 		this.xFond2 = this.xFond2 - this.dx;
-
+		
+		if (this.xFond1 == -800){this.xFond1 = 800;}
+		else if (this.xFond2 == -800){this.xFond2 = 800;}
+		else if (this.xFond1 == 800){this.xFond1 = -800;}
+		else if (this.xFond2 == 800){this.xFond2 = -800;}
 	}
 
 
