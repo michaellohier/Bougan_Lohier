@@ -1,11 +1,18 @@
-package fr.lohier.jeu.objets;
+package fr.lohier.objets;
 
+import java.awt.Image;
 
+import javax.swing.ImageIcon;
+
+import fr.lohier.jeu.Main;
 
 public class Objet {
 	//**** VARIABLES ****//
 		private int largeur, hauteur; //dimensions de l'objet
 		private int x, y; //position de l'objet	
+		protected Image imgObjet;
+		protected ImageIcon icoObjet;
+		
 
 		//**** CONSTRUCTEUR ****//	
 		public Objet(int x, int y, int largeur, int hauteur){		
@@ -24,6 +31,9 @@ public class Objet {
 
 		public int getHauteur() {return hauteur;}
 		
+		public Image getImgObjet() {return imgObjet;}		
+		
+		
 
 		//**** SETTERS ****//	
 		public void setX(int x) {this.x = x;}
@@ -35,6 +45,10 @@ public class Objet {
 		public void setHaut(int hauteur) {this.hauteur = hauteur;}
 		
 		//**** METHODES ****//
-		
-		
+		public void deplacement() {		
+			if(Main.scene.getxPos() >= 0 && Main.scene.getxPos() <= 4430){
+			  this.setX(this.getX() - Main.scene.getDx());		
+		    }
+		}
+
 }
