@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import fr.lohier.affichage.CompteARebours;
 import fr.lohier.affichage.Score;
+import fr.lohier.audio.Audio;
 import fr.lohier.objets.Bloc;
 import fr.lohier.objets.Objet;
 import fr.lohier.objets.Piece;
@@ -38,6 +39,7 @@ public class Scene extends JPanel{
 	private int ySol; //hauteur courante du sol
 	private int hauteurPlafond; //hauteur courante du plafond
 
+	private boolean ok;
 	public Mario mario;
 
 	public TuyauRouge tuyauRouge1;
@@ -117,6 +119,7 @@ public class Scene extends JPanel{
 		this.dx = 0;
 		this.ySol = 293;
 		this.hauteurPlafond = 0;
+		this.ok = true;
 
 
 		this.mario = new Mario(300, 245);
@@ -129,7 +132,7 @@ public class Scene extends JPanel{
 		champ6 = new Champ(3500, 263);
 		champ7 = new Champ(3700, 263);
 		champ8 = new Champ(4500, 263);
-
+		
 		tortue1 = new Tortue(950, 243);
 		tortue2 = new Tortue(1500, 243);
 		tortue3 = new Tortue(1800, 243);
@@ -138,7 +141,7 @@ public class Scene extends JPanel{
 		tortue6 = new Tortue(3600, 243);
 		tortue7 = new Tortue(3900, 243);
 		tortue8 = new Tortue(4200, 243);
-		tortue9 = new Tortue(4300, 243);
+		tortue9 = new Tortue(4400, 243);
 
 
 		tuyauRouge1 = new TuyauRouge(600, 230);
@@ -279,198 +282,207 @@ public class Scene extends JPanel{
 			if(this.mario.isVivant() == true){
 				if(this.score.getNbrePieces() == 10){ 
 					if(this.xPos > 4400){
+						if(this.ok) {
+							Audio.playSound("/audio/partieGagnee.wav");
+							this.ok =false;
+						}
 						return true;
 					}else{return false;}
 				}else{return false;}
 			}else{return false;}
 		}else{return false;}
-	}
+}
 
 
 
 
-	private boolean partiePerdue(){
-		if(this.mario.isVivant() == false || this.compteARebours.getCompteurTemps() <= 0){return true;}
-		else{return false;}
-	}
+private boolean partiePerdue(){
+	if(this.mario.isVivant() == false || this.compteARebours.getCompteurTemps() <= 0){return true;}
+	else{return false;}
+}
 
-	public boolean finDePartie(){
-		if(this.partieGagnee() || this.partiePerdue()){ return true;}
-		else{return false;}
-	}
+public boolean finDePartie(){
+	if(this.partieGagnee() || this.partiePerdue()){ return true;}
+	else{return false;}
+}
 
 
 
-	public void paintComponent(Graphics g) {
+public void paintComponent(Graphics g) {
+	System.out.println(xPos);
 
-		super.paintComponent(g);
-		Graphics g2 = (Graphics2D)g;
+	super.paintComponent(g);
+	Graphics g2 = (Graphics2D)g;
 
-		// Detection des contacts avec des objets
-		for(int i = 0; i < this.tabObjets.size(); i++){
-			// Mario
-			if(this.mario.proche(this.tabObjets.get(i))) {this.mario.contact(this.tabObjets.get(i));}
-			// Champignons
-			for(int j = 0; j<this.tabChamps.size(); j++) {
-				if(this.tabChamps.get(j).proche(this.tabObjets.get(i))) {this.tabChamps.get(j).contact(this.tabObjets.get(i));}
-			}
-			// Tortues
-			for(int j = 0; j<this.tabTortues.size(); j++) {
-				if(this.tabTortues.get(j).proche(this.tabObjets.get(i))) {this.tabTortues.get(j).contact(this.tabObjets.get(i));}
-			}
+	// Detection des contacts avec des objets
+	for(int i = 0; i < this.tabObjets.size(); i++){
+		// Mario
+		if(this.mario.proche(this.tabObjets.get(i))) {this.mario.contact(this.tabObjets.get(i));}
+		// Champignons
+		for(int j = 0; j<this.tabChamps.size(); j++) {
+			if(this.tabChamps.get(j).proche(this.tabObjets.get(i))) {this.tabChamps.get(j).contact(this.tabObjets.get(i));}
 		}
-
-		// Detections des contacts des champignons avec les personnages (hors mario)
-		for(int i = 0; i < this.tabChamps.size(); i++){ 
-			// champignons
-			for(int j = 0; j < this.tabChamps.size(); j++){
-				if(j != i){ 					 				
-					if(this.tabChamps.get(j).proche(this.tabChamps.get(i))){this.tabChamps.get(j).contact(this.tabChamps.get(i));}
-				}
-			}
-			// tortues
-			for(int j = 0; j < this.tabTortues.size(); j++){
-				if(this.tabTortues.get(j).proche(this.tabChamps.get(i))){this.tabTortues.get(j).contact(this.tabChamps.get(i));}
-			}
+		// Tortues
+		for(int j = 0; j<this.tabTortues.size(); j++) {
+			if(this.tabTortues.get(j).proche(this.tabObjets.get(i))) {this.tabTortues.get(j).contact(this.tabObjets.get(i));}
 		}
+	}
 
-		// Detections des contacts des tortues avec les personnages (hors mario)
-		for(int i = 0; i < this.tabTortues.size(); i++){  
-			// champignons
-			for(int j = 0; j < this.tabChamps.size(); j++){
-				if(this.tabChamps.get(j).proche(this.tabTortues.get(i))){this.tabChamps.get(j).contact(this.tabTortues.get(i));} 
-			}
-			// tortues
-			for(int j = 1; j < this.tabTortues.size(); j++){
-				if(j != i){
-					if(this.tabTortues.get(j).proche(this.tabTortues.get(i))){this.tabTortues.get(j).contact(this.tabTortues.get(i));} 
-				}
-			}
-		}    
-
-
-
-		// Detection des contacts de mario avec les personnages	
+	// Detections des contacts des champignons avec les personnages (hors mario)
+	for(int i = 0; i < this.tabChamps.size(); i++){ 
 		// champignons
-		for(int i = 0; i<this.tabChamps.size(); i++) {
-			if(this.mario.proche(this.tabChamps.get(i)) && this.tabChamps.get(i).isVivant()) {
-				this.mario.contact(tabChamps.get(i));
+		for(int j = 0; j < this.tabChamps.size(); j++){
+			if(j != i){ 					 				
+				if(this.tabChamps.get(j).proche(this.tabChamps.get(i))){this.tabChamps.get(j).contact(this.tabChamps.get(i));}
 			}
 		}
 		// tortues
-		for(int i = 0; i<this.tabTortues.size(); i++) {
-			if(this.mario.proche(this.tabTortues.get(i)) && this.tabTortues.get(i).isVivant()) {
-				this.mario.contact(tabTortues.get(i));
+		for(int j = 0; j < this.tabTortues.size(); j++){
+			if(this.tabTortues.get(j).proche(this.tabChamps.get(i))){this.tabTortues.get(j).contact(this.tabChamps.get(i));}
+		}
+	}
+
+	// Detections des contacts des tortues avec les personnages (hors mario)
+	for(int i = 0; i < this.tabTortues.size(); i++){  
+		// champignons
+		for(int j = 0; j < this.tabChamps.size(); j++){
+			if(this.tabChamps.get(j).proche(this.tabTortues.get(i))){this.tabChamps.get(j).contact(this.tabTortues.get(i));} 
+		}
+		// tortues
+		for(int j = 1; j < this.tabTortues.size(); j++){
+			if(j != i){
+				if(this.tabTortues.get(j).proche(this.tabTortues.get(i))){this.tabTortues.get(j).contact(this.tabTortues.get(i));} 
 			}
 		}
+	}    
 
 
 
-		// Detection des contacts de mario avec des pieces
-		for(int i = 0; i < this.tabPieces.size(); i++){
-			if(this.mario.proche(this.tabPieces.get(i))){
-				if(this.mario.contactPiece(this.tabPieces.get(i))){
-					this.tabPieces.remove(i);
-					this.score.setNbrePieces(this.score.getNbrePieces() + 1);
-				}
-			}
+	// Detection des contacts de mario avec les personnages	
+	// champignons
+	for(int i = 0; i<this.tabChamps.size(); i++) {
+		if(this.mario.proche(this.tabChamps.get(i)) && this.tabChamps.get(i).isVivant()) {
+			this.mario.contact(tabChamps.get(i));
+			if(!this.tabChamps.get(i).isVivant()) {Audio.playSound("/audio/ecrasePersonnage.wav");}
 		}
-
-		//Deplacement de tous les objets fixes du jeu
-		this.deplacementFond();
-		if(this.xPos >=0 && this.xPos <=4430) {
-			for(int i = 0; i < this.tabObjets.size(); i++){this.tabObjets.get(i).deplacement();}
-			for(int i = 0; i < this.tabPieces.size(); i++){this.tabPieces.get(i).deplacement();}
-			for(int i = 0; i < this.tabChamps.size(); i++){this.tabChamps.get(i).deplacement();}
-			for(int i = 0; i < this.tabTortues.size(); i++){this.tabTortues.get(i).deplacement();}
-		}
-
-		g2.drawImage(this.imgFond1, this.xFond1, 0, null);
-		g2.drawImage(this.imgFond2, this.xFond2, 0, null);
-		g2.drawImage(this.imgChateau1, 10 - this.xPos, 95, null);
-		g2.drawImage(this.imgDepart, 220 - this.xPos, 234, null);
-
-
-		// Images des objets
-		for(int i = 0; i < this.tabObjets.size(); i++){
-			g2.drawImage(this.tabObjets.get(i).getImgObjet(), this.tabObjets.get(i).getX() , this.tabObjets.get(i).getY(), null);
-		}
-
-		// Images des pieces
-		for(int i = 0; i < this.tabPieces.size(); i++){
-			g2.drawImage(this.tabPieces.get(i).bouge(), this.tabPieces.get(i).getX() , this.tabPieces.get(i).getY(), null);
-		}
-
-
-		// Image du drapeau d arrivee
-		g2.drawImage(imgDrapeau, 4650 - this.xPos, 115, null);
-
-		// Image du chateau d arrivee
-		g2.drawImage(imgChateauFin, 5000 - this.xPos, 145, null);
-
-		// Image de Mario
-		if(this.mario.isVivant()) {
-			if(this.mario.isSaut()){g2.drawImage(this.mario.saute(), this.mario.getX(), this.mario.getY(), null);}
-			else{g2.drawImage(this.mario.marche("mario", 25), this.mario.getX(), this.mario.getY(), null);}
-		}else {g2.drawImage(this.mario.meurt(), this.mario.getX(), this.mario.getY(), null);}
-
-		// Images des champignons
-		for(int i = 0; i < this.tabChamps.size(); i++){
-			if(this.tabChamps.get(i).isVivant() == true){
-				g2.drawImage(this.tabChamps.get(i).marche("champ", 45), this.tabChamps.get(i).getX(), this.tabChamps.get(i).getY(), null);
-			}else{
-				g2.drawImage(this.tabChamps.get(i).meurt(), this.tabChamps.get(i).getX(), this.tabChamps.get(i).getY() + 20, null); 				
-				if(this.tabChamps.get(i).getCompteur() > 100){this.tabChamps.remove(i);}				
-			}
-		}
-
-		// Images des tortues
-		for(int i = 0; i < this.tabTortues.size(); i++){
-			if(this.tabTortues.get(i).isVivant() == true){
-				g2.drawImage(this.tabTortues.get(i).marche("tortue", 50), this.tabTortues.get(i).getX(), this.tabTortues.get(i).getY(), null);
-			}else{
-				g2.drawImage(this.tabTortues.get(i).meurt(), this.tabTortues.get(i).getX(), this.tabTortues.get(i).getY() + 30, null);
-				if(this.tabTortues.get(i).getCompteur() > 100){this.tabTortues.remove(i);}				
-			}
-		}
-
-		g2.setFont(this.police);
-		// Mise a jour du temps de jeu restant
-		g2.drawString(this.compteARebours.getStr(), 5, 25);
-
-		// Mise a jour du score
-		g2.drawString(this.score.getNbrePieces() + " piece(s) trouvee(s) sur " + this.score.getNBRE_TOTAL_PIECES(), 460, 25);
-
-		// Fin de partie
-		if(this.finDePartie()) {
-			Font policeFin = new Font("Arial", Font.BOLD, 50);
-			g2.setFont(policeFin);
-			if(this.partieGagnee()){g2.drawString("Vous avez gagne !!", 120, 180);}
-			else{g2.drawString("Vous avez perdu...", 120, 180);}
+	}
+	// tortues
+	for(int i = 0; i<this.tabTortues.size(); i++) {
+		if(this.mario.proche(this.tabTortues.get(i)) && this.tabTortues.get(i).isVivant()) {
+			this.mario.contact(tabTortues.get(i));
+			if(!this.tabTortues.get(i).isVivant()) {Audio.playSound("/audio/ecrasePersonnage.wav");}
 
 		}
 	}
 
 
 
-	//**** GETTERS ****//	
+	// Detection des contacts de mario avec des pieces
+	for(int i = 0; i < this.tabPieces.size(); i++){
+		if(this.mario.proche(this.tabPieces.get(i))){
+			if(this.mario.contactPiece(this.tabPieces.get(i))){
+				this.tabPieces.remove(i);
+				this.score.setNbrePieces(this.score.getNbrePieces() + 1);
+				Audio.playSound("/audio/piece.wav");
+			}
+		}
+	}
 
-	public int getDx() {return dx;}
-	public int getxPos() {return xPos;}
-	public int getySol() {return ySol;}
-	public int getHautplaond() {return hauteurPlafond;}
+	//Deplacement de tous les objets fixes du jeu
+	this.deplacementFond();
+	if(this.xPos >=0 && this.xPos <=4430) {
+		for(int i = 0; i < this.tabObjets.size(); i++){this.tabObjets.get(i).deplacement();}
+		for(int i = 0; i < this.tabPieces.size(); i++){this.tabPieces.get(i).deplacement();}
+		for(int i = 0; i < this.tabChamps.size(); i++){this.tabChamps.get(i).deplacement();}
+		for(int i = 0; i < this.tabTortues.size(); i++){this.tabTortues.get(i).deplacement();}
+	}
+
+	g2.drawImage(this.imgFond1, this.xFond1, 0, null);
+	g2.drawImage(this.imgFond2, this.xFond2, 0, null);
+	g2.drawImage(this.imgChateau1, 10 - this.xPos, 95, null);
+	g2.drawImage(this.imgDepart, 220 - this.xPos, 234, null);
+
+
+	// Images des objets
+	for(int i = 0; i < this.tabObjets.size(); i++){
+		g2.drawImage(this.tabObjets.get(i).getImgObjet(), this.tabObjets.get(i).getX() , this.tabObjets.get(i).getY(), null);
+	}
+
+	// Images des pieces
+	for(int i = 0; i < this.tabPieces.size(); i++){
+		g2.drawImage(this.tabPieces.get(i).bouge(), this.tabPieces.get(i).getX() , this.tabPieces.get(i).getY(), null);
+	}
+
+
+	// Image du drapeau d arrivee
+	g2.drawImage(imgDrapeau, 4650 - this.xPos, 115, null);
+
+	// Image du chateau d arrivee
+	g2.drawImage(imgChateauFin, 5000 - this.xPos, 145, null);
+
+	// Image de Mario
+	if(this.mario.isVivant()) {
+		if(this.mario.isSaut()){g2.drawImage(this.mario.saute(), this.mario.getX(), this.mario.getY(), null);}
+		else{g2.drawImage(this.mario.marche("mario", 25), this.mario.getX(), this.mario.getY(), null);}
+	}else {g2.drawImage(this.mario.meurt(), this.mario.getX(), this.mario.getY(), null);}
+
+	// Images des champignons
+	for(int i = 0; i < this.tabChamps.size(); i++){
+		if(this.tabChamps.get(i).isVivant() == true){
+			g2.drawImage(this.tabChamps.get(i).marche("champ", 45), this.tabChamps.get(i).getX(), this.tabChamps.get(i).getY(), null);
+		}else{
+			g2.drawImage(this.tabChamps.get(i).meurt(), this.tabChamps.get(i).getX(), this.tabChamps.get(i).getY() + 20, null); 				
+			if(this.tabChamps.get(i).getCompteur() > 100){this.tabChamps.remove(i);}				
+		}
+	}
+
+	// Images des tortues
+	for(int i = 0; i < this.tabTortues.size(); i++){
+		if(this.tabTortues.get(i).isVivant() == true){
+			g2.drawImage(this.tabTortues.get(i).marche("tortue", 50), this.tabTortues.get(i).getX(), this.tabTortues.get(i).getY(), null);
+		}else{
+			g2.drawImage(this.tabTortues.get(i).meurt(), this.tabTortues.get(i).getX(), this.tabTortues.get(i).getY() + 30, null);
+			if(this.tabTortues.get(i).getCompteur() > 100){this.tabTortues.remove(i);}				
+		}
+	}
+
+	g2.setFont(this.police);
+	// Mise a jour du temps de jeu restant
+	g2.drawString(this.compteARebours.getStr(), 5, 25);
+
+	// Mise a jour du score
+	g2.drawString(this.score.getNbrePieces() + " piece(s) trouvee(s) sur " + this.score.getNBRE_TOTAL_PIECES(), 460, 25);
+
+	// Fin de partie
+	if(this.finDePartie()) {
+		Font policeFin = new Font("Arial", Font.BOLD, 50);
+		g2.setFont(policeFin);
+		if(this.partieGagnee()){g2.drawString("Vous avez gagne !!", 120, 180);}
+		else{g2.drawString("Vous avez perdu...", 120, 180);}
+
+	}
+}
+
+
+
+//**** GETTERS ****//	
+
+public int getDx() {return dx;}
+public int getxPos() {return xPos;}
+public int getySol() {return ySol;}
+public int getHautplaond() {return hauteurPlafond;}
 
 
 
 
-	//**** SETTERS ****//	
+//**** SETTERS ****//	
 
-	public void setDx(int dx) {this.dx = dx;}
-	public void setxPos(int xPos) {this.xPos = xPos;}
-	public void setxFond1(int xFond1) {this.xFond1 = xFond1;}
-	public void setxFond2(int xFond2) {this.xFond2 = xFond2;}
-	public void setySol(int ySol) {this.ySol =ySol;}
-	public void setHautPlafond(int hauteurPlafond) {this.hauteurPlafond = hauteurPlafond;}
+public void setDx(int dx) {this.dx = dx;}
+public void setxPos(int xPos) {this.xPos = xPos;}
+public void setxFond1(int xFond1) {this.xFond1 = xFond1;}
+public void setxFond2(int xFond2) {this.xFond2 = xFond2;}
+public void setySol(int ySol) {this.ySol =ySol;}
+public void setHautPlafond(int hauteurPlafond) {this.hauteurPlafond = hauteurPlafond;}
 
 
 

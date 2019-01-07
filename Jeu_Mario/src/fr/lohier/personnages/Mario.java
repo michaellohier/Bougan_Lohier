@@ -3,7 +3,7 @@ package fr.lohier.personnages;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-
+import fr.lohier.audio.Audio;
 import fr.lohier.jeu.Main;
 import fr.lohier.objets.Objet;
 import fr.lohier.objets.Piece;
@@ -127,6 +127,9 @@ public class Mario extends Personnage{
 			Image img;	
 			
 	        str = "/images/boom.png";
+	        if (this.compteurMort == 0) {Audio.playSound("/audio/boum.wav");}
+	        if (this.compteurMort == 100) {Audio.playSound("/audio/partiePerdue.wav");}
+
 	        this.compteurMort++; 
 	        if(this.compteurMort > 100){
 	        	str = "/images/marioMeurt.png";

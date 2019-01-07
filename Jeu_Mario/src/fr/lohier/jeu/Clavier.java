@@ -3,6 +3,7 @@ package fr.lohier.jeu;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import fr.lohier.audio.Audio;
 import fr.lohier.jeu.Main;
 
 
@@ -37,7 +38,8 @@ public class Clavier implements KeyListener {
 			}
 
 			if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-				Main.scene.mario.setSaut(true);
+	        	Audio.playSound("/audio/saut.wav");				
+	        	Main.scene.mario.setSaut(true);
 			}
 		}
 	}
